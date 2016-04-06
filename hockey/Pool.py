@@ -4,7 +4,10 @@ from hockey.Club import Club
 class Pool:
 
     def __init__(self, clubs):
-        self.clubs = clubs
+        if clubs is None:
+            self.clubs = []
+        else:
+            self.clubs = clubs
 
     def __str__(self):
         return str(self.clubs)
@@ -14,6 +17,14 @@ class Pool:
 
     def __len__(self):
         return len(self.clubs)
+
+    def __contains__(self, item):
+        found = False
+        i = 0
+        while not found and i < len(self):
+            found = (self.clubs[i] == item)
+            i += 1
+        return found
 
     @staticmethod
     def init_pools(clubs, nb_pools):

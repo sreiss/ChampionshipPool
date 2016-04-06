@@ -15,6 +15,9 @@ class Club:
     def __repr__(self):
         return str(self)
 
+    def __eq__(self, other):
+        return self.city == other.city
+
     @staticmethod
     def init_clubs(datafile, dico_dist, dico_durations):
         rows = MatrixTools.load_csv(datafile)

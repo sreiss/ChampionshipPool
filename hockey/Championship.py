@@ -29,14 +29,22 @@ class Championship:
         return res
 
     def mutation(self):
-        mut_index = random.randint(0, min(map(len, self.pools)) - 1)
         pool_indexes = list(range(0, self.nb_pools))
         if len(pool_indexes) > 2:
             pool_indexes = random.sample(pool_indexes, 2)
-        tmp_club0 = self.pools[pool_indexes[0]].pop(mut_index)
-        tmp_club1 = self.pools[pool_indexes[1]].pop(mut_index)
-        self.pools[pool_indexes[0]].append(tmp_club1)
-        self.pools[pool_indexes[1]].append(tmp_club0)
+
+        mut_indexes = []
+        for i in pool_indexes:
+            mut_indexes.append(random.randint(0, len(self.pools[i])-1))
+
+        tmp_club = self.pools[pool_indexes[0]].get_club(mut_indexes[0])
+        self.pools[pool_indexes[0]].set_club(mut_indexes[0], self.pools[pool_indexes[1]].get_club(mut_indexes[1]))
+        self.pools[pool_indexes[1]].set_club(mut_indexes[1], tmp_club)
+
+        # tmp_club0 = self.pools[pool_indexes[0]].pop(mut_indexes[0])
+        # tmp_club1 = self.pools[pool_indexes[1]].pop(mut_indexes[1])
+        # self.pools[pool_indexes[0]].append(tmp_club1)
+        # self.pools[pool_indexes[1]].append(tmp_club0)
 
         # def crossing_over(self, championship):
         #     max_index = min(self.pools[0].length, self.pools[1].length)

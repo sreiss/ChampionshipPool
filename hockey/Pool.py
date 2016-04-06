@@ -22,6 +22,12 @@ class Pool:
             pools.append(Pool(clubs[i:i+int(len(clubs)/nb_pools)]))
         return pools
 
+    def get_club(self, index):
+        return self.clubs[index]
+
+    def set_club(self, index, club):
+        self.clubs[index] = club
+
     def pop(self, index):
         return self.clubs.pop(index)
 
@@ -47,6 +53,3 @@ class Pool:
             for opposite_club in self.clubs:
                 res += club.get_duration(opposite_club)
         return res
-
-
-

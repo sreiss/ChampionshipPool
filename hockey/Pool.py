@@ -18,8 +18,8 @@ class Pool:
     @staticmethod
     def init_pools(clubs, nb_pools):
         pools = []
-        for i in range(0, nb_pools):
-            pools.append(Pool(clubs[i*nb_pools:int(len(clubs)/nb_pools+i*nb_pools-1)]))
+        for i in range(0, len(clubs), int(len(clubs)/nb_pools)):
+            pools.append(Pool(clubs[i:i+int(len(clubs)/nb_pools)]))
         return pools
 
     def pop(self, index):

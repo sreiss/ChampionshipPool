@@ -1,4 +1,4 @@
-from genetic import MatrixTools
+from bastools import MatrixTools
 
 
 class Club:

@@ -1,6 +1,6 @@
 import random
 
-from genetic import MatrixTools
+from bastools import MatrixTools
 from hockey.Club import Club
 from hockey.Pool import Pool
 

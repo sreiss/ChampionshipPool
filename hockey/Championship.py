@@ -38,11 +38,17 @@ class Championship:
             i += 1
         return found
 
+    # moyenne des écarts absolus à la moyenne
     def evaluate_rank(self):
-        res = 0
+        rank_sum = 0
         for pool in self.pools:
-            res += pool.evaluate_rank()
-        return res
+            rank_sum += pool.evaluate_rank()
+        rank_mean = rank_sum / len(self)
+        rank_ecart = 0
+        for pool in self.pools:
+            rank_ecart += abs(pool.evaluate_rank() - rank_mean)
+        rank_ecart_mean = rank_ecart / len(self)
+        return rank_ecart_mean
 
     def evaluate_distance(self):
         res = 0
@@ -57,10 +63,7 @@ class Championship:
         return res
 
     def evaluate(self):
-        res = 0
-        for pool in self.pools:
-            res += pool.evaluate_rank() * 2 + pool.evaluate_distance()
-        return res
+        return [self.evaluate_rank(), self.evaluate_durations()]
 
     # echange deux clubs de poule
     def mutation(self):
@@ -76,7 +79,7 @@ class Championship:
         self.pools[pool_indexes[0]].set_club(mut_indexes[0], self.pools[pool_indexes[1]].get_club(mut_indexes[1]))
         self.pools[pool_indexes[1]].set_club(mut_indexes[1], tmp_club)
 
-    # croisement uniforme, pour chaque "gene", on choisit l'un ou l'autre avec la meme probabilité
+    # croisement uniforme, pour chaque "gene", on choisit l'un ou l'autre au hasard
     def cross_over(self, championship):
         if len(self) == len(championship):
             passed_indexes = []

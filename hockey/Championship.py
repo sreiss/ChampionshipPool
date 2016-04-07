@@ -33,13 +33,32 @@ class Championship:
     def __len__(self):
         return len(self.pools)
 
+    def __lt__(self, other):
+        return self.evaluate_rank() < other.evaluate_rank() and self.evaluate_distance() < other.evaluate_distance()
+
+    # def __le__(self, other):
+    #     return (self.evaluate_rank() <= other.evaluate_rank() and self.evaluate_distance() <= other.evaluate_distance()) \
+    #            or (self.evaluate_rank() > other.evaluate_rank() and self.evaluate_distance() <= other.evaluate_distance()) \
+    #            or (self.evaluate_distance() > other.evaluate_distance() and self.evaluate_rank() <= other.evaluate_rank())
+    #
+    # def __gt__(self, other):
+    #     return self.evaluate_rank() > other.evaluate_rank() and self.evaluate_distance() > other.evaluate_distance()
+    #
+    # def __ge__(self, other):
+    #     return (self.evaluate_rank() >= other.evaluate_rank() and self.evaluate_distance() >= other.evaluate_distance()) \
+    #            or (self.evaluate_rank() < other.evaluate_rank() and self.evaluate_distance() >= other.evaluate_distance()) \
+    #            or (self.evaluate_distance() < other.evaluate_distance() and self.evaluate_rank() >= other.evaluate_rank())
+
+    def __eq__(self, other):
+        return self.evaluate_rank() == other.evaluate_rank() and self.evaluate_distance() == other.evaluate_distance()
+
     def __contains__(self, item):
-        found = False
-        i = 0
-        while not found and i < len(self):
-            found = (item in self.pools[i])
-            i += 1
-        return found
+            found = False
+            i = 0
+            while not found and i < len(self):
+                found = (item in self.pools[i])
+                i += 1
+            return found
 
     @staticmethod
     def init_championships(nb_championships, nb_pools):
@@ -73,7 +92,7 @@ class Championship:
         return res
 
     def evaluate(self):
-        return [self.evaluate_rank(), self.evaluate_durations()]
+        return [self.evaluate_rank(), self.evaluate_distance()]
 
     # echange deux clubs de poule
     def mutation(self):

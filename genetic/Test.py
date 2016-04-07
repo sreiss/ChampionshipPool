@@ -3,6 +3,8 @@ from genetic.Population import Population
 
 if __name__ == '__main__':
     population = Population(100, 2)
+    # population.breeding_season(0.4)
+    population.sort()
     for champ in population:
         print(champ)
     # champ = Championship(2)

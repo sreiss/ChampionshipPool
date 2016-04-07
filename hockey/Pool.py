@@ -1,4 +1,5 @@
 from hockey.Club import Club
+import random
 
 
 class Pool:
@@ -7,6 +8,9 @@ class Pool:
         self.clubs = []
         if clubs is not None:
             self.clubs = clubs
+
+    def __iter__(self):
+        return iter(self.clubs)
 
     def __str__(self):
         return str(self.clubs)
@@ -28,6 +32,7 @@ class Pool:
     @staticmethod
     def init_pools(clubs, nb_pools):
         pools = []
+        random.shuffle(clubs)
         for i in range(0, len(clubs), int(len(clubs)/nb_pools)):
             pools.append(Pool(clubs[i:i+int(len(clubs)/nb_pools)]))
         return pools
@@ -49,20 +54,20 @@ class Pool:
 
     def evaluate_rank(self):
         i = 0
-        for club in self.clubs:
+        for club in self:
             i += club.rank
         return i
 
     def evaluate_distance(self):
         res = 0
-        for club in self.clubs:
-            for opposite_club in self.clubs:
+        for club in self:
+            for opposite_club in self:
                 res += club.get_distance(opposite_club)
         return res
 
     def evaluate_durations(self):
         res = 0
-        for club in self.clubs:
-            for opposite_club in self.clubs:
+        for club in self:
+            for opposite_club in self:
                 res += club.get_duration(opposite_club)
         return res

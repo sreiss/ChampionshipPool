@@ -21,6 +21,9 @@ class Championship:
             for i in range(0, nb_pools):
                 self.pools.append(Pool(None))
 
+    def __iter__(self):
+        return iter(self.pools)
+
     def __str__(self):
         return str(self.pools) + str(self.evaluate())
 
@@ -38,27 +41,34 @@ class Championship:
             i += 1
         return found
 
+    @staticmethod
+    def init_championships(nb_championships, nb_pools):
+        championships = []
+        for i in range(0, nb_championships):
+            championships.append(Championship(nb_pools))
+        return championships
+
     # moyenne des écarts absolus à la moyenne
     def evaluate_rank(self):
         rank_sum = 0
-        for pool in self.pools:
+        for pool in self:
             rank_sum += pool.evaluate_rank()
         rank_mean = rank_sum / len(self)
         rank_ecart = 0
-        for pool in self.pools:
+        for pool in self:
             rank_ecart += abs(pool.evaluate_rank() - rank_mean)
         rank_ecart_mean = rank_ecart / len(self)
         return rank_ecart_mean
 
     def evaluate_distance(self):
         res = 0
-        for pool in self.pools:
+        for pool in self:
             res += pool.evaluate_distance()
         return res
 
     def evaluate_durations(self):
         res = 0
-        for pool in self.pools:
+        for pool in self:
             res += pool.evaluate_durations()
         return res
 
@@ -85,12 +95,12 @@ class Championship:
             passed_indexes = []
             new_championship = Championship(len(self), False)
             clubs = []
-            for pool in self.pools:
+            for pool in self:
                 clubs += pool.clubs
             pool_index = 0
-            for pool in self.pools:
+            for pool in self:
                 club_index = 0
-                for club in pool.clubs:
+                for club in pool:
                     this_choice = bool(random.getrandbits(1))
 
                     if this_choice:

@@ -4,9 +4,8 @@ from hockey.Club import Club
 class Pool:
 
     def __init__(self, clubs):
-        if clubs is None:
-            self.clubs = []
-        else:
+        self.clubs = []
+        if clubs is not None:
             self.clubs = clubs
 
     def __str__(self):
@@ -38,6 +37,9 @@ class Pool:
 
     def set_club(self, index, club):
         self.clubs[index] = club
+
+    def insert_club(self, index, club):
+        self.clubs.insert(index, club)
 
     def pop(self, index):
         return self.clubs.pop(index)

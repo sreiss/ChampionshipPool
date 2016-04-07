@@ -38,6 +38,24 @@ class Championship:
             i += 1
         return found
 
+    def evaluate_rank(self):
+        res = 0
+        for pool in self.pools:
+            res += pool.evaluate_rank()
+        return res
+
+    def evaluate_distance(self):
+        res = 0
+        for pool in self.pools:
+            res += pool.evaluate_distance()
+        return res
+
+    def evaluate_durations(self):
+        res = 0
+        for pool in self.pools:
+            res += pool.evaluate_durations()
+        return res
+
     def evaluate(self):
         res = 0
         for pool in self.pools:
@@ -61,17 +79,42 @@ class Championship:
     # croisement uniforme, pour chaque "gene", on choisit l'un ou l'autre avec la meme probabilité
     def cross_over(self, championship):
         if len(self) == len(championship):
+            passed_indexes = []
             new_championship = Championship(len(self), False)
+            clubs = []
+            for pool in self.pools:
+                clubs += pool.clubs
             pool_index = 0
             for pool in self.pools:
                 club_index = 0
                 for club in pool.clubs:
-                    new_club = random.sample([club, championship.pools[pool_index].get_club(club_index)], 1)
-                    while new_club[0] in new_championship:
-                        new_club = random.sample([club, championship.pools[pool_index].get_club(club_index)], 1)
-                    new_championship.pools[pool_index].append(new_club[0])
+                    this_choice = bool(random.getrandbits(1))
+
+                    if this_choice:
+                        new_club = club
+                    else:
+                        new_club = championship.pools[pool_index].get_club(club_index)
+
+                    if new_club not in new_championship:
+                        new_championship.pools[pool_index].append(new_club)
+                        clubs.remove(new_club)
+                    else:
+                        if this_choice:
+                            new_club = championship.pools[pool_index].get_club(club_index)
+                        else:
+                            new_club = club
+
+                        if new_club not in new_championship:
+                            new_championship.pools[pool_index].append(new_club)
+                            clubs.remove(new_club)
+                        else:
+                            passed_indexes.append([pool_index, club_index])
+
                     club_index += 1
                 pool_index += 1
+            for passed_index in passed_indexes:
+                new_championship.pools[passed_index[0]].insert_club(passed_index[1], clubs.pop(0))
+
             return new_championship
         else:
             return None

@@ -13,6 +13,12 @@ class Population:
     def __iter__(self):
         return iter(self.championships)
 
+    def __str__(self):
+        return str(self.championships[0])
+
+    def __repr__(self):
+        return str(self)
+
     def shuffle(self):
         random.shuffle(self.championships)
 

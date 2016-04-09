@@ -13,6 +13,9 @@ class Population:
     def __iter__(self):
         return iter(self.championships)
 
+    def shuffle(self):
+        random.shuffle(self.championships)
+
     def sort(self):
         # TODO: fonction de tri qui tient compte des deux critères
         self.championships.sort()
@@ -23,7 +26,7 @@ class Population:
     def get_championship(self, index):
         return self.championships[index]
 
-    def breeding_season(self, reproduction_probability):
+    def breeding_season(self, reproduction_probability, mutation_probability):
         # reproduction
         pop_to_copulate = random.sample(self.championships, int(reproduction_probability * len(self)))
         max_pop = len(pop_to_copulate)
@@ -33,6 +36,10 @@ class Population:
             self.append(championships[0].cross_over(championships[1]))
 
         # selection
-        # self.sort()
-        # self.championships = self.championships[0:len()]
+        self.sort()
+        self.championships = self.championships[0:len(self.championships)-added_pop]
 
+        #mutation
+        pop_to_mutate = random.sample(self.championships, int(mutation_probability*len(self)))
+        for championship in pop_to_mutate:
+            championship.mutation()

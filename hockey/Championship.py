@@ -9,6 +9,9 @@ class Championship:
 
     def __init__(self, nb_pools, init=True):
         self.pools = []
+        self.distance = self.rank = self.duration = -1
+        self.n_distance = self.n_rank = self.n_duration = -1
+
         if init:
             self.pools = Pool.init_pools(
                 Club.init_clubs(
@@ -21,11 +24,36 @@ class Championship:
             for i in range(0, nb_pools):
                 self.pools.append(Pool(None))
 
+    def reset(self):
+        self.distance = self.rank = self.duration = -1
+        self.n_distance = self.n_rank = self.n_duration = -1
+
+    def normalize_dist(self, minimum, maximum):
+        if self.n_distance < 0:
+            divide_by = maximum.evaluate_distance() - minimum.evaluate_distance()
+            self.n_distance = (self.evaluate_distance() - minimum.evaluate_distance())/(1 if divide_by == 0.0 else divide_by)
+        return self.n_distance
+
+    def normalize_rank(self, minimum, maximum):
+        if self.n_rank < 0:
+            divide_by = maximum.evaluate_rank() - minimum.evaluate_rank()
+            self.n_rank = (self.evaluate_rank() - minimum.evaluate_rank())/(1 if divide_by == 0.0 else divide_by)
+        return self.n_rank
+
+    def normalize_durations(self, minimum, maximum):
+        if self.n_duration < 0:
+            divide_by = maximum.evaluate_duration() - minimum.evaluate_duration()
+            self.n_duration = (self.evaluate_duration() - minimum.evaluate_duration()) / (1 if divide_by == 0.0 else divide_by)
+        return self.n_duration
+
+    def get_pool(self, index):
+        return self.pools[index]
+
     def __iter__(self):
         return iter(self.pools)
 
     def __str__(self):
-        return str(self.pools) + str(self.evaluate())
+        return str(self.evaluate_str()) + str(self.pools)
 
     def __repr__(self):
         return str(self)
@@ -34,23 +62,10 @@ class Championship:
         return len(self.pools)
 
     def __lt__(self, other):
-        return self.evaluate_rank() < other.evaluate_rank() and self.evaluate_distance() < other.evaluate_distance()
-
-    # def __le__(self, other):
-    #     return (self.evaluate_rank() <= other.evaluate_rank() and self.evaluate_distance() <= other.evaluate_distance()) \
-    #            or (self.evaluate_rank() > other.evaluate_rank() and self.evaluate_distance() <= other.evaluate_distance()) \
-    #            or (self.evaluate_distance() > other.evaluate_distance() and self.evaluate_rank() <= other.evaluate_rank())
-    #
-    # def __gt__(self, other):
-    #     return self.evaluate_rank() > other.evaluate_rank() and self.evaluate_distance() > other.evaluate_distance()
-    #
-    # def __ge__(self, other):
-    #     return (self.evaluate_rank() >= other.evaluate_rank() and self.evaluate_distance() >= other.evaluate_distance()) \
-    #            or (self.evaluate_rank() < other.evaluate_rank() and self.evaluate_distance() >= other.evaluate_distance()) \
-    #            or (self.evaluate_distance() < other.evaluate_distance() and self.evaluate_rank() >= other.evaluate_rank())
+        return self.evaluate() < other.evaluate()
 
     def __eq__(self, other):
-        return self.evaluate_rank() == other.evaluate_rank() and self.evaluate_distance() == other.evaluate_distance()
+        return self.evaluate() == other.evaluate()
 
     def __contains__(self, item):
             found = False
@@ -69,30 +84,36 @@ class Championship:
 
     # moyenne des écarts absolus à la moyenne
     def evaluate_rank(self):
-        rank_sum = 0
-        for pool in self:
-            rank_sum += pool.evaluate_rank()
-        rank_mean = rank_sum / len(self)
-        rank_ecart = 0
-        for pool in self:
-            rank_ecart += abs(pool.evaluate_rank() - rank_mean)
-        rank_ecart_mean = rank_ecart / len(self)
-        return rank_ecart_mean
+        if self.rank < 0:
+            rank_sum = 0
+            for pool in self:
+                rank_sum += pool.evaluate_rank()
+            rank_mean = rank_sum / len(self)
+            rank_ecart = 0
+            for pool in self:
+                rank_ecart += abs(pool.evaluate_rank() - rank_mean)
+            self.rank = rank_ecart / len(self)
+        return self.rank
 
     def evaluate_distance(self):
-        res = 0
-        for pool in self:
-            res += pool.evaluate_distance()
-        return res
+        if self.distance < 0:
+            self.distance = 0
+            for pool in self:
+                self.distance += pool.evaluate_distance()
+        return self.distance
 
-    def evaluate_durations(self):
-        res = 0
-        for pool in self:
-            res += pool.evaluate_durations()
-        return res
+    def evaluate_duration(self):
+        if self.duration < 0:
+            self.duration = 0
+            for pool in self:
+                self.duration += pool.evaluate_durations()
+        return self.duration
+
+    def evaluate_str(self):
+        return [self.evaluate_rank(), self.evaluate_distance()]
 
     def evaluate(self):
-        return [self.evaluate_rank(), self.evaluate_distance()]
+        return (self.n_rank + self.n_distance)/2
 
     # echange deux clubs de poule
     def mutation(self):

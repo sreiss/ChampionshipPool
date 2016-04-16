@@ -2,11 +2,20 @@ from hockey.Championship import Championship
 from genetic.Population import Population
 
 if __name__ == '__main__':
-    population = Population(100, 2)
-    # population.breeding_season(0.4)
-    for i in range(0, 1000):
+    population = Population(50, 2)
+    # population.normalize()
+    # population.sort()
+    # for champ in population:
+    #     print(champ)
+    # print("--------------------------------------------------")
+    # population.breeding_season(0.5, 0.01)
+    # print(population)
+    # for champ in population:
+    #     print(champ)
+
+    for i in range(0, 100):
         population.breeding_season(0.5, 0.01)
-        if i % 100 == 0:
+        if i % 10 == 0:
             print(population)
     # for champ in population:
     #     print(champ)
